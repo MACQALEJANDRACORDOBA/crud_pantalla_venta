@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nueva Venta</title>
+
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="ventasStyle.css">
+</head>
+
+<body>
+
+<div class="app-container">
+
+    <!-- HEADER -->
+    <div class="header-verde">
+        <div class="header-izq">
+            <i class="bi bi-calendar"></i>
+            <div>
+                <strong>1 Enero 2026</strong>
+                <small>Lunes</small>
+            </div>
+        </div>
+        <div class="header-der">
+            <i class="bi bi-tag-fill"></i>
+        </div>
+    </div>
+
+    <!-- TITULO -->
+    <div class="titulo-seccion">
+        Ventas
+    </div>
+<!--AQUI ENCIERRO TODO EN UN FROM PARA ENVIAR DATOS AL SERVIDOR, SIN FROM PHP NO RECIBE NADA. Y ASI HACER FORMULARIO FUNCIONAL Y AGREGO NAMES A LOS INPUTS; ESEO LE DICE A PHP "ESTE DATO SE LLAMA ..."  y uso hidden porque-->
+   <form id="formVenta">
+<!-- ===================== -->
+    <!-- CLIENTE -->
+    <!-- ===================== -->
+    <input type="hidden" name="cliente" id="clienteSeleccionado">
+    <div class="dropdown mb-3">
+    
+        <button class="btn campo-app dropdown-toggle w-100 text-start" data-bs-toggle="dropdown" data-original="Cliente">
+            Cliente
+        </button>
+
+        <div class="dropdown-menu w-100 p-3">
+
+            <input type="text" class="form-control mb-2" placeholder="Buscar cliente">
+
+            <ul class="lista-clientes">
+                <li>Ana Maria</li>
+                <li>Benites</li>
+                <li>Camila</li>
+            </ul>
+
+            <button type="button" class="btn btn-nuevo w-100 mt-2">
+                <i class="bi bi-plus-circle"></i> Nuevo cliente
+            </button>
+
+            <div class="nuevo-cliente-form mt-2 d-none">
+                <input type="text" class="form-control mb-2" placeholder="Nombre del cliente">
+
+                <div class="d-flex justify-content-between">
+                    <button type="button" class="btn btn-sm btn-secondary">Cancelar</button>
+                    <button type="button" class="btn btn-sm btn-success">Guardar</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- ===================== -->
+    <!-- TAMAÑO -->
+    <!-- ===================== -->
+    <input type="hidden" name="tamano" id="tamanoSeleccionado">
+    <div class="dropdown mb-3">
+       
+        <button class="btn campo-app dropdown-toggle w-100 text-start" data-bs-toggle="dropdown" data-original="Tamaño">
+            Tamaño
+        </button>
+
+        <ul class="dropdown-menu w-100">
+            <li><a class="dropdown-item tamano" data-id="1">Pequeño</a></li>
+            <li><a class="dropdown-item tamano" data-id="2">Grande</a></li>
+        </ul>
+    </div>
+
+
+    <!-- ===================== -->
+    <!-- CANTIDAD -->
+    <!-- ===================== -->
+
+<!-- BOTÓN PRINCIPAL-->
+<button type="button" 
+        class="btn campo-app w-100 text-start mb-3" 
+        id="btnCantidad">
+    Cantidad
+</button>
+
+ <!--CONTENEDOR OCULTO -->
+<div id="panelCantidad" class="mt-2 d-none">
+
+    <label>Cubetas</label>
+    <input type="number" id="cubetas" class="form-control mb-2" min="0">
+
+    <label>Unidades</label>
+    <input type="number" id="unidades" class="form-control mb-2" min="0" max="29">
+
+</div>
+
+ <!--VALOR REAL QUE SE ENVÍA-->
+<input type="hidden" name="cantidad" id="cantidadTotal">
+
+ <!-- BOTÓN PRINCIPAL 
+    <button type="button" class="btn campo-app w-100 text-start" id="btnCantidad">
+        Cantidad
+    </button>
+
+     CONTENEDOR OCULTO 
+    <div id="panelCantidad" class="mt-2 d-none">
+
+        <label>Cubetas</label>
+        <input type="number" id="cubetas" class="form-control mb-2" min="0">
+
+        <label>Unidades</label>
+        <input type="number" id="unidades" class="form-control mb-2" min="0" max="29">
+
+    </div>
+
+     VALOR REAL 
+    <input type="hidden" name="cantidad" id="cantidadTotal">
+
+</div>-->
+
+
+    <!-- ===================== -->
+    <!-- PRECIO -->
+    <!-- ===================== -->
+
+
+<div class="mb-3">
+    <input type="text" 
+           name="precio" 
+           id="precio" 
+           class="form-control campo-app" 
+           placeholder="Precio (ej: 40.000)">
+</div>
+
+    <!-- ===================== -->
+    <!-- ESTADO DE CUENTA -->
+    <!-- ===================== -->
+    <div class="dropdown mb-3">
+    <input type="hidden" id="estadoSeleccionado"> 
+
+    <button class="btn campo-app dropdown-toggle w-100 text-start" data-bs-toggle="dropdown" data-original="Estado de cuenta">
+        Estado de cuenta
+    </button>
+
+
+    <div class="dropdown-menu w-100 p-3">
+
+        <div class="form-check">
+            <input class="form-check-input" type="radio" name="estado" value="pendiente">
+            <label class="form-check-label">Pendiente</label>
+        </div>
+
+        <div class="form-check">
+            <input class="form-check-input" type="radio" name="estado" value="abono">
+            <label class="form-check-label">Abonó</label>
+        </div>
+
+        <div class="form-check">
+            <input class="form-check-input" type="radio" name="estado" value="cancelado">
+            <label class="form-check-label">Canceló</label>
+        </div>
+
+    </div>
+</div>
+
+    <!-- ===================== -->
+    <!-- NOTAS -->
+    <!-- ===================== -->
+    <div class="mb-3">
+        <textarea name="nota" class="form-control campo-app" rows="3" placeholder="Escribe una nota..."></textarea>
+    </div>
+
+   <!-- BOTONES -->
+
+<div class="d-flex justify-content-between mt-4"> <!--d-flex → pone los elementos en fila, justify-content-between → uno a cada extremo-->
+    <a href="ventas.html" class="btn btn-secondary">← Atrás</a>
+    <button type="submit" class="btn btn-success">✔ Guardar</button>
+</div>
+
+</div>
+</div>
+</div>
+</form>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+<script>
+$("#formVenta").submit(function(e){
+    e.preventDefault();
+
+let precioLimpio = $("#precio").val().replace(/\./g, ""); // Antes de enviar el formulario, vamos a limpiar el campo precio, Convierte: 32.000 -> 32000 para que la base de datos lo pueda leer y luego serialize() envía ese valor correcto
+$("#precio").val(precioLimpio);                           // PERO El campo en pantalla quedará sin puntos después de guardar, DEBO arreglarlo despues
+
+
+if(!$("#clienteSeleccionado").val()){
+    alert("Selecciona un cliente");
+    return;
+}
+
+if(!$("#tamanoSeleccionado").val()){
+    alert("Selecciona un tamaño");
+    return;
+}
+
+if(!$("#cantidadTotal").val()){
+    alert("Ingresa cantidad");
+    return;
+}
+
+if(!$("input[name='estado']:checked").val()){
+    alert("Selecciona estado");
+    return;
+}
+
+console.log($(this).serialize());
+    $.ajax({
+        url: "guardar_venta.php",
+        type: "POST",
+        data: $(this).serialize(), // serialize Eso envía TODO el formulario tal cual está 
+   success: function(respuesta){
+    console.log("Respuesta PHP:", respuesta);
+
+    if(respuesta.trim() == "ok"){
+        alert("Venta guardada correctamente");
+
+        // limpiar formulario
+        $("#formVenta")[0].reset();
+
+        // limpiar valores ocultos
+        $("#clienteSeleccionado").val("");
+        $("#tamanoSeleccionado").val("");
+        $("#cantidadTotal").val("");
+
+        // desmarcar radios
+        $("input[name='estado']").prop("checked", false);
+
+        // restaurar textos de botones
+        $("#btnCantidad").text("Cantidad");
+
+        $(".dropdown button").each(function(){
+            let texto = $(this).data("original");
+            if(texto){
+                $(this).text(texto);
+            }
+        });
+
+    } else {
+        alert("Error: " + respuesta);
+    }
+}
+    });
+});
+
+
+// =======================
+// CLIENTE
+// =======================
+$(".lista-clientes li").click(function(e){
+    e.preventDefault();
+
+    let cliente = $(this).text();
+    $("#clienteSeleccionado").val(cliente);
+
+    console.log("Cliente seleccionado:", cliente);
+});
+ //Boton nuevo cliente
+$(".btn-nuevo").click(function(){
+    $(".nuevo-cliente-form").removeClass("d-none");
+});
+
+// =======================
+// TAMAÑO → PRODUCTO
+// =======================
+
+$(".tamano").click(function(e){
+    e.preventDefault(); // 🔥 IMPORTANTE
+    let id = $(this).data("id");
+
+    $("#tamanoSeleccionado").val(id);
+
+    console.log("tamano:", id);
+});
+
+// =======================
+// PRECIO con puntos (40.000)$$$$
+// =======================
+$("#precio").on("input", function(){
+    let valor = $(this).val().replace(/\./g, "").replace(/\D/g, "");
+
+    if(valor){
+        valor = parseInt(valor).toLocaleString("es-CO");
+    }
+
+    $(this).val(valor);
+});
+
+
+let precio = $("#precio").val().replace(/\./g, "");
+
+
+// =======================
+// ESTADO
+// =======================
+
+$("input[name='estado']").on("change", function() {
+    let valor = $(this).val();
+    $("#estadoSeleccionado").val(valor);
+});
+
+// Mostrar cliente seleccionado
+$(".lista-clientes li").click(function(){
+    let cliente = $(this).text();
+
+    $("#clienteSeleccionado").val(cliente);
+
+    //  CAMBIA TEXTO DEL BOTÓN
+    $(this).closest(".dropdown").find("button").text(cliente);
+});
+
+// Mostrar tamaño seleccionado
+$(".tamano").click(function(){
+    let id = $(this).data("id");
+    let texto = $(this).text();
+
+    $("#tamanoSeleccionado").val(id);
+
+    $(this).closest(".dropdown").find("button").text(texto);
+});
+
+// abrir/cerrar
+$("#btnCantidad").click(function(){
+    $("#panelCantidad").toggleClass("d-none");
+});
+//CALCULAR TOTAL AUTOMÁTICO: ¿QUÉ HACE? 👉 Si escribe: 1 cubeta + 6 unidades👉 Muestra:1 cubetas + 6 unidades (36 huevos) 👉 Y guarda: 36 ✔
+// calcular total
+$("#cubetas, #unidades").on("input", function(){
+
+    let cubetas = parseInt($("#cubetas").val()) || 0;
+    let unidades = parseInt($("#unidades").val()) || 0;
+
+    let total = (cubetas * 30) + unidades;
+
+    $("#cantidadTotal").val(total);
+
+    $("#btnCantidad").text(
+        cubetas + " cubetas + " + unidades + " unidades (" + total + " huevos)"
+    );
+});
+
+// auto cerrar
+$("#cubetas, #unidades").on("blur", function(){
+    $("#panelCantidad").addClass("d-none");
+});
+
+// Mostrar estado seleccionado
+$("input[name='estado']").change(function(){
+    let estado = $(this).val();
+
+    $("#estadoSeleccionado").val(estado);
+
+    $(this).closest(".dropdown").find("button").text(estado);
+});
+</script>
+</body>
+</html>
+

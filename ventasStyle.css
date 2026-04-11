@@ -1,0 +1,274 @@
+/* ========================= */
+/* GENERAL */
+/* ========================= */
+body {
+    background-color: #f2f2f2;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+/* CONTENEDOR TIPO APP */
+.app-container {
+    max-width: 420px;
+    margin: auto;
+    background: #ffffff;
+    min-height: 100vh;
+    padding: 15px;
+}
+
+/* ========================= */
+/* HEADER VERDE */
+/* ========================= */
+.header-verde {
+    background-color: #4CAF50;
+    color: white;
+    border-radius: 15px;
+    padding: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.header-izq {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.header-izq i {
+    font-size: 20px;
+}
+
+.header-izq small {
+    display: block;
+    font-size: 12px;
+}
+
+.header-der i {
+    font-size: 18px;
+}
+
+/* ========================= */
+/* TITULO */
+/* ========================= */
+.titulo-seccion {
+    background-color: #e0e0e0;
+    border-radius: 10px;
+    padding: 8px;
+    text-align: center;
+    margin: 15px 0;
+    font-weight: 500;
+}
+
+/* ========================= */
+/* CAMPOS TIPO APP */
+/* ========================= */
+.campo-app {
+    background-color: #f8f9fa;
+    border-radius: 12px;
+    border: none;
+    padding: 12px;
+    font-weight: 500;
+}
+
+/* QUITAR BORDE AZUL FEO */
+.campo-app:focus {
+    box-shadow: none;
+    outline: none;
+}
+
+/* ========================= */
+/* DROPDOWN PERSONALIZADO */
+/* ========================= */
+.dropdown-menu {
+    border-radius: 12px;
+    border: none;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+/* ITEMS DE DROPDOWN */
+.dropdown-item {
+    border-radius: 8px;
+}
+
+.dropdown-item:hover {
+    background-color: #e8f5e9;
+}
+
+/* ========================= */
+/* LISTA CLIENTES */
+/* ========================= */
+.lista-clientes {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.lista-clientes li {
+    padding: 8px;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.lista-clientes li:hover {
+    background-color: #e8f5e9;
+}
+
+/* ========================= */
+/* BOTÓN NUEVO CLIENTE */
+/* ========================= */
+.btn-nuevo {
+    background-color: #e8f5e9;
+    border: none;
+    border-radius: 10px;
+    font-weight: 500;
+}
+
+.btn-nuevo:hover {
+    background-color: #c8e6c9;
+}
+
+/* ========================= */
+/* RADIO (ESTADO DE CUENTA) */
+/* ========================= */
+.form-check {
+    padding: 8px;
+    border-radius: 8px;
+}
+
+.form-check:hover {
+    background-color: #e8f5e9;
+    cursor: pointer;
+}
+
+/* ========================= */
+/* INPUTS */
+/* ========================= */
+.form-control {
+    border-radius: 10px;
+}
+
+/* ========================= */
+/* BOTONES */
+/* ========================= */
+.botones {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+}
+
+.btn-principal {
+    background-color: #4CAF50;
+    color: white;
+    border-radius: 10px;
+    padding: 8px 20px;
+    border: none;
+}
+
+.btn-principal:hover {
+    background-color: #43a047;
+}
+
+.btn-secundario {
+    background-color: #ccc;
+    border-radius: 10px;
+    padding: 8px 20px;
+    border: none;
+}
+
+.btn-secundario:hover {
+    background-color: #b0b0b0;
+}
+
+
+/* ========================= */
+/* TARJETAS DE VENTA */
+/* ========================= */
+.card-venta {
+    background:white;
+    border-radius: 12px;
+    padding: 12px;
+    margin-bottom: 12px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+}
+
+/* HEADER TARJETA */
+.venta-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* CUERPO */
+.venta-body {
+    font-size: 14px;
+    color: #555;
+    margin: 5px 0;
+}
+
+/* PRECIO */
+.venta-footer {
+    font-weight: bold;
+    color: #2e7d32;
+}
+
+/* ESTADOS */
+.estado {
+    font-size: 12px;
+    padding: 4px 8px;
+    border-radius: 8px;
+}
+
+.estado.pendiente {
+    background-color: #fff3cd;
+    color: #856404;
+}
+
+.estado.cancelado {
+    background-color: #d4edda;
+    color: #155724;
+
+}
+
+.estado.abono,
+.estado.abonó {
+    background-color: #d1ecf1;
+    color: #0c5460;
+}
+
+.botones-inferiores{
+margin-top:120px;
+}
+
+/*estilos de pantalla obtener_detalle_venta*/
+.card-detalle{
+background:white;
+padding:20px;
+max-width:400px;
+border-radius:10px;
+box-shadow:0 2px 8px rgba(0,0,0,0.1);
+margin:40px auto;
+}
+
+.card-detalle button{
+background:#2e7d32;
+color:white;
+border:none;
+padding:10px 20px;
+border-radius:6px;
+cursor:pointer;
+}
+
+.card-detalle button:hover{
+background:#1b5e20;
+}
+
+/*BOTON ELIMINAR DE DETALLE_VENTA  TUVE QUE FORZAR # EL ESTILO ROJO EN CSS POR QUE CON BOOTSTRAP NO ME FUNCIONO*/
+#btnEliminar{
+background-color:#dc3545;
+color:white;
+border:none;
+}
+
+#btnEliminar:hover{
+background-color:#bb2d3b;
+}
