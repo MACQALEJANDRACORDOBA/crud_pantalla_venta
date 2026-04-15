@@ -7,16 +7,20 @@ $conexion = new mysqli("localhost", "root", "", "gestion_de_huevos");
 $id = $_GET['id'];
 
 $sql = "SELECT 
-venta.id_venta,
-venta.cliente,
-venta.fecha,
-venta.estado,
-SUM(detalle_venta.subtotal) AS total
-FROM venta
-LEFT JOIN detalle_venta 
-ON venta.id_venta = detalle_venta.id_venta
-WHERE venta.id_venta = $id
-GROUP BY venta.id_venta";
+            v.id_venta,
+            v.fecha,
+            c.nombre AS cliente,
+            v.estado,
+            p.tipo AS tamano,
+            SUM(d.cantidad) AS cantidad_total,
+            SUM(d.subtotal) AS total,
+            MAX(d.nota) AS nota
+        FROM venta v
+        INNER JOIN clientes c ON v.id_cliente = c.id_cliente
+        INNER JOIN detalle_venta d ON v.id_venta = d.id_venta
+        INNER JOIN producto p ON d.id_producto = p.id_producto
+        GROUP BY v.id_venta, v.fecha, c.nombre, v.estado, p.tipo
+        ORDER BY v.id_venta DESC";
 
 $resultado = $conexion->query($sql);
 

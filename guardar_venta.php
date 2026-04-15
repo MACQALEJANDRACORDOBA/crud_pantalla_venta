@@ -27,15 +27,12 @@ $subtotal = $precio;
 $fecha = date("Y-m-d");
 
 // 1️⃣ INSERTAR EN VENTA
-$sqlVenta = "INSERT INTO venta (fecha, cliente, estado) 
+$sqlVenta = "INSERT INTO venta (fecha, id_cliente, estado) 
 VALUES ('$fecha', '$cliente', '$estado')";
-
 
 if ($conexion->query($sqlVenta) === TRUE) {
 
-
     $id_venta = $conexion->insert_id;
-  
 
     $sqlDetalle = "INSERT INTO detalle_venta 
     (cantidad, precio_unitario, subtotal, id_producto, id_venta, nota) 

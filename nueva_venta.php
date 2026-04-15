@@ -1,3 +1,13 @@
+<?php
+
+$conexion = new mysqli("localhost", "root", "", "gestion_de_huevos");
+
+if ($conexion->connect_error) {
+    die("Error de conexión");
+}
+
+?>
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -53,22 +63,31 @@
 
             <input type="text" class="form-control mb-2" placeholder="Buscar cliente">
 
-            <ul class="lista-clientes">
-                <li>Ana Maria</li>
-                <li>Benites</li>
-                <li>Camila</li>
-            </ul>
+        <ul class="lista-clientes">
+            <?php
+
+            $sql = "SELECT * FROM clientes ORDER BY nombre";
+            $resultado = $conexion->query($sql);
+
+            while($fila = $resultado->fetch_assoc()){
+            echo "<li data-id='".$fila['id_cliente']."'> ".$fila['nombre']." 
+                     <span class='eliminar-cliente' style='color:red; cursor:pointer; float:right;'>🗑</span>
+                  </li>";
+            }
+
+            ?>
+        </ul>
 
             <button type="button" class="btn btn-nuevo w-100 mt-2">
                 <i class="bi bi-plus-circle"></i> Nuevo cliente
             </button>
 
             <div class="nuevo-cliente-form mt-2 d-none">
-                <input type="text" class="form-control mb-2" placeholder="Nombre del cliente">
+                <input type="text" id="nombreNuevoCliente" class="form-control mb-2" placeholder="Nombre del cliente">
 
                 <div class="d-flex justify-content-between">
                     <button type="button" class="btn btn-sm btn-secondary">Cancelar</button>
-                    <button type="button" class="btn btn-sm btn-success">Guardar</button>
+                   <button type="button" class="btn btn-sm btn-success" id="guardarCliente">Guardar</button>
                 </div>
             </div>
 
@@ -274,16 +293,21 @@ console.log($(this).serialize());
 
 
 // =======================
-// CLIENTE
+// CLIENTE: tuve que usar algo que se llama delegacion de eventos. 
 // =======================
-$(".lista-clientes li").click(function(e){
+$(document).on("click", ".lista-clientes li", function(e){
+
     e.preventDefault();
 
-    let cliente = $(this).text();
-    $("#clienteSeleccionado").val(cliente);
+    let id = $(this).data("id");
+    let nombre = $(this).text();
 
-    console.log("Cliente seleccionado:", cliente);
+    $("#clienteSeleccionado").val(id);
+
+    $(this).closest(".dropdown").children("button").first().text(nombre);
+
 });
+
  //Boton nuevo cliente
 $(".btn-nuevo").click(function(){
     $(".nuevo-cliente-form").removeClass("d-none");
@@ -328,16 +352,6 @@ $("input[name='estado']").on("change", function() {
     $("#estadoSeleccionado").val(valor);
 });
 
-// Mostrar cliente seleccionado
-$(".lista-clientes li").click(function(){
-    let cliente = $(this).text();
-
-    $("#clienteSeleccionado").val(cliente);
-
-    //  CAMBIA TEXTO DEL BOTÓN
-    $(this).closest(".dropdown").find("button").text(cliente);
-});
-
 // Mostrar tamaño seleccionado
 $(".tamano").click(function(){
     let id = $(this).data("id");
@@ -380,6 +394,85 @@ $("input[name='estado']").change(function(){
     $("#estadoSeleccionado").val(estado);
 
     $(this).closest(".dropdown").find("button").text(estado);
+});
+
+// boton guardar, el de nuevo cliente
+$("#guardarCliente").click(function(){
+
+let nombre = $("#nombreNuevoCliente").val();
+
+if(nombre == ""){
+    alert("Escribe el nombre del cliente");
+    return;
+}
+
+$.ajax({
+
+    url: "guardar_cliente.php",
+    type: "POST",
+    data: {nombre:nombre},
+
+success:function(respuesta){
+
+let cliente = JSON.parse(respuesta);
+
+$(".lista-clientes").append(
+    "<li data-id='"+cliente.id+"'>"+cliente.nombre+
+    "<span class='eliminar-cliente' style='color:red; cursor:pointer; float:right;'>🗑</span></li>"
+);
+
+// seleccionar automáticamente
+$("#clienteSeleccionado").val(cliente.id);
+$(".dropdown").first().find("button").text(cliente.nombre);
+
+$("#nombreNuevoCliente").val("");
+$(".nuevo-cliente-form").addClass("d-none");
+
+}
+
+});
+
+});
+
+//eliminar cliente: Qué pasará ahora Cuando presiones 🗑:1️) Pregunta ¿Eliminar cliente? 2️) Se elimina de MySQL 3️) Desaparece de la lista 4️) No se recarga la página
+$(".btn-nuevo").click(function(e){
+    e.stopPropagation(); // evita que Bootstrap cierre el dropdown cuando selecciono boton "nuevo cliente"
+    $(".nuevo-cliente-form").removeClass("d-none");
+});
+
+$(document).on("click", ".eliminar-cliente", function(e){
+
+    e.stopPropagation(); // evita que seleccione el cliente
+
+    if(!confirm("¿Eliminar este cliente?")){
+        return;
+    }
+
+    let li = $(this).closest("li");
+    let id = li.data("id");
+
+    $.ajax({
+
+        url: "eliminar_cliente.php",
+        type: "POST",
+        data: {id:id},
+
+        success:function(respuesta){
+
+          if(respuesta.trim() == "ok"){
+    li.remove();
+}
+else if(respuesta.trim() == "tiene_ventas"){
+    alert("No puedes eliminar este cliente porque tiene ventas registradas");
+}
+else{
+    alert("Error al eliminar cliente");
+}
+
+        }
+
+    });
+
 });
 </script>
 </body>
