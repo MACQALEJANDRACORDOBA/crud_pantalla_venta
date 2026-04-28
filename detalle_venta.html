@@ -65,94 +65,77 @@ $(document).ready(function(){
 });
 
 function cargarDetalle(){
+    $.ajax({
+        url:"obtener_detalle_venta.php",
+        type:"GET",
+        data:{id_venta:idVenta},
+        dataType: "json",
+        success: function(data) {
+            if (data.length > 0) {
+                let venta = data[0]; 
 
-$.ajax({
-    url:"obtener_detalle_venta.php",
-    type:"GET",
-    data:{id:idVenta},
+                $("#detalleVenta").html(`
+                    <strong>Cliente:</strong> ${venta.cliente}<br>
+                    <strong>Fecha:</strong> ${venta.fecha}<br>
+                    <strong>Total:</strong> $ ${parseInt(venta.subtotal).toLocaleString("es-CO")}
+                `);
 
-    dataType: "json",
-
-    success:function(venta){
-
-        $("#detalleVenta").html(`
-        Cliente: ${venta.cliente}<br>
-        Fecha: ${venta.fecha}<br>
-        Total: $ ${parseInt(venta.total).toLocaleString("es-CO")}
-        `);
-
-        $("#estado").val(venta.estado);
-    }
-
-});
-
-}
+                $("#estado").val(venta.estado);
+            } else {
+                $("#detalleVenta").html("No se encontraron detalles para esta venta.");
+            }
+        }
+    }); // <--- AQUÍ CERRAMOS EL AJAX
+} // <--- AQUÍ CERRAMOS LA FUNCIÓN cargarDetalle
 
 function actualizarEstado(){
-
-let estado = $("#estado").val();
-
-$.ajax({
-    url:"actualizar_estado.php",
-    type:"POST",
-
-    data:{
-        id_venta:idVenta,
-        estado:estado
-    },
-
-    success:function(){
-        alert("Estado actualizado");
-        window.location.href="ventas_inicio.html";
-    }
-
-});
-
-}
- //2) CRUD-DELETE: esta funcion se activa cuando presiono el boton ELIMINAR VENTA
-function eliminarVenta(){
-
-Swal.fire({
-title: "¿Eliminar venta?",
-text: "Esta acción no se puede deshacer",
-icon: "warning",
-showCancelButton: true,
-confirmButtonColor: "#d33",
-cancelButtonColor: "#3085d6",
-confirmButtonText: "Sí, eliminar",
-cancelButtonText: "Cancelar"
-}).then((result) => {
-
-if (result.isConfirmed) {
+    let estado = $("#estado").val();
 
     $.ajax({
-        url:"eliminar_venta.php",
+        url:"actualizar_estado.php",
         type:"POST",
-
         data:{
-            id_venta:idVenta
+            id_venta:idVenta,
+            estado:estado
         },
-
         success:function(){
-
-            Swal.fire(
-                "Eliminado",
-                "La venta fue eliminada correctamente",
-                "success"
-            ).then(() => {
-                window.location.href="ventas_inicio.html";
-            });
-
+            alert("Estado actualizado");
+            window.location.href="ventas_inicio.html";
         }
-
     });
-
 }
 
-});
-
+function eliminarVenta(){
+    Swal.fire({
+        title: "¿Eliminar venta?",
+        text: "Esta acción no se puede deshacer",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#d33",
+        cancelButtonColor: "#3085d6",
+        confirmButtonText: "Sí, eliminar",
+        cancelButtonText: "Cancelar"
+    }).then((result) => {
+        if (result.isConfirmed) {
+            $.ajax({
+                url:"eliminar_venta.php",
+                type:"POST",
+                data:{
+                    id_venta:idVenta
+                },
+                success:function(){
+                    Swal.fire(
+                        "Eliminado",
+                        "La venta fue eliminada correctamente",
+                        "success"
+                    ).then(() => {
+                        window.location.href="ventas_inicio.html";
+                    });
+                }
+            });
+        }
+    });
 }
-
 </script>
 
 </body>

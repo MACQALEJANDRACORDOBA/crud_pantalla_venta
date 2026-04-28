@@ -1,22 +1,32 @@
 <?php
+require_once 'conexion.php'; 
+$pdo = Conexion::conectar(); 
 
-$conexion = new mysqli("localhost", "root", "", "gestion_de_huevos");
-
+// Recibimos el nombre del cliente
 $nombre = $_POST['nombre'];
 
-$sql = "INSERT INTO clientes (nombre) VALUES ('$nombre')";
+try {
+    // 1. Preparamos la sentencia para insertar
+    $sql = "INSERT INTO clientes (nombre) VALUES (?)";
+    $stmt = $pdo->prepare($sql);
+    
+    // 2. Ejecutamos pasando el nombre en un arreglo
+    if ($stmt->execute([$nombre])) {
+        
+        // Obtenemos el ID generado automáticamente
+        $id = $pdo->lastInsertId();
 
-if($conexion->query($sql)){
+        // Devolvemos los datos en formato JSON
+        echo json_encode([
+            "id" => $id,
+            "nombre" => $nombre
+        ]);
+    } else {
+        echo json_encode(["error" => "No se pudo insertar"]);
+    }
 
-    $id = $conexion->insert_id;
-
-    echo json_encode([
-        "id"=>$id,
-        "nombre"=>$nombre
-    ]);
-
-}else{
-    echo "error";
+} catch (PDOException $e) {
+    // Si hay un error de base de datos (ej. nombre duplicado si fuera único)
+    echo json_encode(["error" => $e->getMessage()]);
 }
-
 ?>

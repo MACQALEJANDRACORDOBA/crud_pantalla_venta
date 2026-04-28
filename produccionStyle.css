@@ -1,0 +1,112 @@
+/* Configuración básica del fondo */
+body {
+    background-color: #f2f2f2;
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+/* El contenedor que simula un celular en pantallas grandes */
+.app-container {
+    max-width: 400px;         /* Ancho máximo tipo celular */
+    margin: 30px auto;        /* Centra la app y le da espacio arriba */
+    background-color: #f2f2f2;/* Fondo igual al body para camuflarse */
+    padding: 20px;
+    min-height: 90vh;
+}
+
+/* Tarjeta verde de fecha */
+.tarjeta-fecha {
+    background-color: #b8d3bf; /* Verde pastel del prototipo */
+    border: 2px solid #444;    /* Borde oscuro marcado */
+    border-radius: 15px;       /* Bordes muy redondeados */
+    padding: 15px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+    cursor: pointer;
+}
+
+/* Título "Producción" gris */
+.titulo-seccion {
+    background-color: #d9d9d9;
+    border: 2px solid #444;
+    border-radius: 12px;
+    text-align: center;
+    padding: 10px;
+    font-weight: bold;
+    color: #333;
+}
+
+/* Los rectángulos blancos de los textos (Huevos grandes/pequeños) */
+.etiqueta-blanca {
+    background-color: white;
+    border: 2px solid #444;
+    border-radius: 12px;
+    padding: 10px;
+    text-align: center;
+    font-weight: 500;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Inputs de número con bordes marcados */
+.input-personalizado {
+    border: 2px solid #444 !important;
+    border-radius: 12px;
+    height: 48px;
+    text-align: center;
+    font-size: 1.1rem;
+    font-weight: bold;
+}
+
+/* Contenedor de la fila de botones */
+.barra-inferior {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 80px; /* Espacio para que queden abajo */
+    gap: 10px;
+}
+
+/* Estilos de botones individuales */
+.btn-atras {
+    background-color: white;
+    border: 2px solid #ccc;
+    border-radius: 10px;
+    color: #333;
+    padding: 8px 15px;
+}
+
+.btn-guardar {
+    background-color: #1a8754; /* Verde oscuro */
+    color: white;
+    border: 2px solid #146c43;
+    border-radius: 10px;
+    padding: 8px 20px;
+    flex-grow: 1;              /* Hace que este botón sea el más largo */
+    font-weight: bold;
+}
+
+.btn-oscuro {
+    background-color: #212529; /* Negro/Gris oscuro */
+    color: white;
+    border-radius: 10px;
+    padding: 8px 15px;
+}
+
+/* --- MEDIA QUERY: Lo que hace que sea responsivo --- */
+@media (max-width: 420px) {
+    .app-container {
+        max-width: 100%; /* En celular usa todo el ancho */
+        margin: 0;       /* Quita márgenes externos */
+        padding: 15px;
+    }
+    
+    .barra-inferior {
+        margin-top: 50px; /* Menos espacio en pantallas pequeñas */
+    }
+}

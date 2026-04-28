@@ -1,11 +1,6 @@
 <?php
-
-$conexion = new mysqli("localhost", "root", "", "gestion_de_huevos");
-
-if ($conexion->connect_error) {
-    die("Error de conexión");
-}
-
+require_once 'conexion.php'; 
+$pdo = Conexion::conectar(); 
 ?>
 
 <!DOCTYPE html>
@@ -14,22 +9,13 @@ if ($conexion->connect_error) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Nueva Venta</title>
-
-    <!-- Bootstrap -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    
-    <!-- Icons -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
-
-    <!-- CSS -->
     <link rel="stylesheet" href="ventasStyle.css">
 </head>
-
 <body>
 
 <div class="app-container">
-
-    <!-- HEADER -->
     <div class="header-verde">
         <div class="header-izq">
             <i class="bi bi-calendar"></i>
@@ -38,190 +24,100 @@ if ($conexion->connect_error) {
                 <small>Lunes</small>
             </div>
         </div>
-        <div class="header-der">
-            <i class="bi bi-tag-fill"></i>
-        </div>
+        <div class="header-der"><i class="bi bi-tag-fill"></i></div>
     </div>
 
-    <!-- TITULO -->
-    <div class="titulo-seccion">
-        Ventas
-    </div>
-<!--AQUI ENCIERRO TODO EN UN FROM PARA ENVIAR DATOS AL SERVIDOR, SIN FROM PHP NO RECIBE NADA. Y ASI HACER FORMULARIO FUNCIONAL Y AGREGO NAMES A LOS INPUTS; ESEO LE DICE A PHP "ESTE DATO SE LLAMA ..."  y uso hidden porque-->
-   <form id="formVenta">
-<!-- ===================== -->
-    <!-- CLIENTE -->
-    <!-- ===================== -->
-    <input type="hidden" name="cliente" id="clienteSeleccionado">
-    <div class="dropdown mb-3">
-    
-        <button class="btn campo-app dropdown-toggle w-100 text-start" data-bs-toggle="dropdown" data-original="Cliente">
-            Cliente
-        </button>
+    <div class="titulo-seccion">Ventas</div>
 
-        <div class="dropdown-menu w-100 p-3">
-
-            <input type="text" class="form-control mb-2" placeholder="Buscar cliente">
-
-        <ul class="lista-clientes">
-            <?php
-
-            $sql = "SELECT * FROM clientes ORDER BY nombre";
-            $resultado = $conexion->query($sql);
-
-            while($fila = $resultado->fetch_assoc()){
-            echo "<li data-id='".$fila['id_cliente']."'> ".$fila['nombre']." 
-                     <span class='eliminar-cliente' style='color:red; cursor:pointer; float:right;'>🗑</span>
-                  </li>";
-            }
-
-            ?>
-        </ul>
-
-            <button type="button" class="btn btn-nuevo w-100 mt-2">
-                <i class="bi bi-plus-circle"></i> Nuevo cliente
+    <form id="formVenta">
+        <input type="hidden" name="cliente" id="clienteSeleccionado">
+        <div class="dropdown mb-3">
+            <button class="btn campo-app dropdown-toggle w-100 text-start" data-bs-toggle="dropdown" data-original="Cliente">
+                Cliente
             </button>
-
-            <div class="nuevo-cliente-form mt-2 d-none">
-                <input type="text" id="nombreNuevoCliente" class="form-control mb-2" placeholder="Nombre del cliente">
-
-                <div class="d-flex justify-content-between">
-                    <button type="button" class="btn btn-sm btn-secondary">Cancelar</button>
-                   <button type="button" class="btn btn-sm btn-success" id="guardarCliente">Guardar</button>
+            <div class="dropdown-menu w-100 p-3">
+                <input type="text" class="form-control mb-2" placeholder="Buscar cliente">
+                <ul class="lista-clientes">
+                    <?php
+                    // USAMOS PDO PARA CARGAR LOS CLIENTES
+                    $sql = "SELECT * FROM clientes ORDER BY nombre";
+                    $stmt = $pdo->query($sql);
+                    while($fila = $stmt->fetch(PDO::FETCH_ASSOC)){
+                        echo "<li data-id='".$fila['id_cliente']."'> ".$fila['nombre']." 
+                                <span class='eliminar-cliente' style='color:red; cursor:pointer; float:right;'>🗑</span>
+                              </li>";
+                    }
+                    ?>
+                </ul>
+                <button type="button" class="btn btn-nuevo w-100 mt-2">
+                    <i class="bi bi-plus-circle"></i> Nuevo cliente
+                </button>
+                <div class="nuevo-cliente-form mt-2 d-none">
+                    <input type="text" id="nombreNuevoCliente" class="form-control mb-2" placeholder="Nombre del cliente">
+                    <div class="d-flex justify-content-between">
+                        <button type="button" class="btn btn-sm btn-secondary">Cancelar</button>
+                        <button type="button" class="btn btn-sm btn-success" id="guardarCliente">Guardar</button>
+                    </div>
                 </div>
             </div>
-
-        </div>
-    </div>
-
-    <!-- ===================== -->
-    <!-- TAMAÑO -->
-    <!-- ===================== -->
-    <input type="hidden" name="tamano" id="tamanoSeleccionado">
-    <div class="dropdown mb-3">
-       
-        <button class="btn campo-app dropdown-toggle w-100 text-start" data-bs-toggle="dropdown" data-original="Tamaño">
-            Tamaño
-        </button>
-
-        <ul class="dropdown-menu w-100">
-            <li><a class="dropdown-item tamano" data-id="1">Pequeño</a></li>
-            <li><a class="dropdown-item tamano" data-id="2">Grande</a></li>
-        </ul>
-    </div>
-
-
-    <!-- ===================== -->
-    <!-- CANTIDAD -->
-    <!-- ===================== -->
-
-<!-- BOTÓN PRINCIPAL-->
-<button type="button" 
-        class="btn campo-app w-100 text-start mb-3" 
-        id="btnCantidad">
-    Cantidad
-</button>
-
- <!--CONTENEDOR OCULTO -->
-<div id="panelCantidad" class="mt-2 d-none">
-
-    <label>Cubetas</label>
-    <input type="number" id="cubetas" class="form-control mb-2" min="0">
-
-    <label>Unidades</label>
-    <input type="number" id="unidades" class="form-control mb-2" min="0" max="29">
-
-</div>
-
- <!--VALOR REAL QUE SE ENVÍA-->
-<input type="hidden" name="cantidad" id="cantidadTotal">
-
- <!-- BOTÓN PRINCIPAL 
-    <button type="button" class="btn campo-app w-100 text-start" id="btnCantidad">
-        Cantidad
-    </button>
-
-     CONTENEDOR OCULTO 
-    <div id="panelCantidad" class="mt-2 d-none">
-
-        <label>Cubetas</label>
-        <input type="number" id="cubetas" class="form-control mb-2" min="0">
-
-        <label>Unidades</label>
-        <input type="number" id="unidades" class="form-control mb-2" min="0" max="29">
-
-    </div>
-
-     VALOR REAL 
-    <input type="hidden" name="cantidad" id="cantidadTotal">
-
-</div>-->
-
-
-    <!-- ===================== -->
-    <!-- PRECIO -->
-    <!-- ===================== -->
-
-
-<div class="mb-3">
-    <input type="text" 
-           name="precio" 
-           id="precio" 
-           class="form-control campo-app" 
-           placeholder="Precio (ej: 40.000)">
-</div>
-
-    <!-- ===================== -->
-    <!-- ESTADO DE CUENTA -->
-    <!-- ===================== -->
-    <div class="dropdown mb-3">
-    <input type="hidden" id="estadoSeleccionado"> 
-
-    <button class="btn campo-app dropdown-toggle w-100 text-start" data-bs-toggle="dropdown" data-original="Estado de cuenta">
-        Estado de cuenta
-    </button>
-
-
-    <div class="dropdown-menu w-100 p-3">
-
-        <div class="form-check">
-            <input class="form-check-input" type="radio" name="estado" value="pendiente">
-            <label class="form-check-label">Pendiente</label>
         </div>
 
-        <div class="form-check">
-            <input class="form-check-input" type="radio" name="estado" value="abono">
-            <label class="form-check-label">Abonó</label>
+        <input type="hidden" name="tamano" id="tamanoSeleccionado">
+        <div class="dropdown mb-3">
+            <button class="btn campo-app dropdown-toggle w-100 text-start" data-bs-toggle="dropdown" data-original="Tamaño">
+                Tamaño
+            </button>
+            <ul class="dropdown-menu w-100">
+                <li><a class="dropdown-item tamano" data-id="1">Pequeño</a></li>
+                <li><a class="dropdown-item tamano" data-id="2">Grande</a></li>
+            </ul>
         </div>
 
-        <div class="form-check">
-            <input class="form-check-input" type="radio" name="estado" value="cancelado">
-            <label class="form-check-label">Canceló</label>
+        <button type="button" class="btn campo-app w-100 text-start mb-3" id="btnCantidad">Cantidad</button>
+        <div id="panelCantidad" class="mt-2 d-none">
+            <label>Cubetas</label>
+            <input type="number" id="cubetas" class="form-control mb-2" min="0">
+            <label>Unidades</label>
+            <input type="number" id="unidades" class="form-control mb-2" min="0" max="29">
+        </div>
+        <input type="hidden" name="cantidad" id="cantidadTotal">
+
+        <div class="mb-3">
+            <input type="text" name="precio" id="precio" class="form-control campo-app" placeholder="Precio (ej: 40.000)">
         </div>
 
-    </div>
+        <div class="dropdown mb-3">
+            <button class="btn campo-app dropdown-toggle w-100 text-start" data-bs-toggle="dropdown" data-original="Estado de cuenta">
+                Estado de cuenta
+            </button>
+            <div class="dropdown-menu w-100 p-3">
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="estado" value="pendiente">
+                    <label class="form-check-label">Pendiente</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="estado" value="abono">
+                    <label class="form-check-label">Abonó</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="estado" value="cancelado">
+                    <label class="form-check-label">Canceló</label>
+                </div>
+            </div>
+        </div>
+
+        <div class="mb-3">
+            <textarea name="nota" class="form-control campo-app" rows="3" placeholder="Escribe una nota..."></textarea>
+        </div>
+
+        <div class="d-flex justify-content-between mt-4">
+            <a href="ventas_inicio.html" class="btn btn-secondary">← Atrás</a>
+            <button type="submit" class="btn btn-success">✔ Guardar</button>
+        </div>
+    </form>
 </div>
 
-    <!-- ===================== -->
-    <!-- NOTAS -->
-    <!-- ===================== -->
-    <div class="mb-3">
-        <textarea name="nota" class="form-control campo-app" rows="3" placeholder="Escribe una nota..."></textarea>
-    </div>
-
-   <!-- BOTONES -->
-
-<div class="d-flex justify-content-between mt-4"> <!--d-flex → pone los elementos en fila, justify-content-between → uno a cada extremo-->
-    <a href="ventas.html" class="btn btn-secondary">← Atrás</a>
-    <button type="submit" class="btn btn-success">✔ Guardar</button>
-</div>
-
-</div>
-</div>
-</div>
-</form>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 
 <script>
@@ -477,4 +373,7 @@ else{
 </script>
 </body>
 </html>
+
+
+
 

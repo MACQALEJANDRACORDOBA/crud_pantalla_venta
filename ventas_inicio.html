@@ -105,56 +105,56 @@ function cargarVentas() {
     $.ajax({
         url: "obtener_ventas.php",
         type: "GET",
-    
-        success: function (response) {
+        dataType: "json", // Le decimos a jQuery que esperamos un JSON
+        success: function (ventas) {
+            // Ya no necesitamos JSON.parse(response) porque usamos dataType: "json"
+            
+            if(ventas.error) {
+                console.error("Error del servidor:", ventas.error);
+                return;
+            }
 
-    let ventas = JSON.parse(response);
-   
-
-    let html = "";
+            let html = "";
             ventas.forEach(function (venta) {
-                //estos let es para poder mostrar cubetas + huevos en el resumen de ventas; ya no: 35 huevos; si no:1 cubeta + 5 huevos (35huevos)
-                let total = parseInt(venta.cantidad_total);
-
+                let total = parseInt(venta.cantidad_total) || 0;
                 let cubetas = Math.floor(total / 30);
                 let unidades = total % 30;
                 
-                //y este let + condicion es para que cuando no haya unidades extra no aparezca “+ 0 huevos”.
                 let textoCantidad = "";
+                if(unidades === 0){
+                    textoCantidad = cubetas + " cubetas (" + total + ")";
+                } else {
+                    textoCantidad = cubetas + " cubetas + " + unidades + " huevos (" + total + ")";
+                }
 
-                    if(unidades === 0){
-                        textoCantidad = cubetas + " cubetas (" + total + ")";
-                    } else {
-                        textoCantidad = cubetas + " cubetas + " + unidades + " huevos (" + total + ")";
-                    }
+                html += `
+                <div class="card-venta" onclick="abrirVenta(${venta.id_venta})" style="cursor:pointer;">
+                    <div class="venta-header">
+                        <strong>${venta.cliente}</strong>
+                        <span class="estado ${venta.estado}">
+                            ${venta.estado === "abono" ? "Abonó" : 
+                              venta.estado === "pendiente" ? "Pendiente" : 
+                              "Cancelado"}
+                        </span>
+                    </div>
 
-//template string “Estoy construyendo HTML dinámico” // 1) onclick-> este cambio lo hice para el UPDATE DEL CRUD: hice que la tarjeta sea clickeable.
-           html += `
-    <div class="card-venta" onclick="abrirVenta(${venta.id_venta})">
-        <div class="venta-header">
-    <strong>${venta.cliente}</strong>
-   <span class="estado ${venta.estado}">
-    ${venta.estado === "abono" ? "Abonó" : 
-      venta.estado === "pendiente" ? "Pendiente" : 
-      "Cancelado"}
-</span>
-    </div>
+                    <div class="venta-body">
+                        Fecha: ${venta.fecha} <br>
+                        Tamaño: ${venta.tamano} <br>
+                        Cantidad: ${textoCantidad} <br>
+                        Nota: ${venta.nota ? venta.nota : "Sin nota"}
+                    </div>
 
-        <div class="venta-body">
-            Fecha: ${venta.fecha} <br>
-            Tamaño: ${venta.tamano} <br>
-            Cantidad: ${textoCantidad} <br>
-            Nota: ${venta.nota ? venta.nota : "Sin nota"}
-        </div>
-
-        <div class="venta-footer">
-          $ ${parseInt(venta.total).toLocaleString("es-CO")} 
-        </div>
-    </div>
-            `;
+                    <div class="venta-footer">
+                        $ ${parseInt(venta.total).toLocaleString("es-CO")} 
+                    </div>
+                </div>`;
             });
 
             $("#listaVentas").html(html);
+        },
+        error: function(xhr, status, error) {
+            console.error("Error en la petición AJAX:", error);
         }
     });
 }

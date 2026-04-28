@@ -1,31 +1,44 @@
 <?php
+require_once 'conexion.php'; 
+$pdo = Conexion::conectar(); 
 
-header('Content-Type: application/json'); #esto es para evitar errores de codificación
+// Recibimos el ID de la venta
+$id_venta = $_GET['id_venta']; 
 
-$conexion = new mysqli("localhost", "root", "", "gestion_de_huevos");
-
-$id = $_GET['id'];
 
 $sql = "SELECT 
-            v.id_venta,
             v.fecha,
-            c.nombre AS cliente,
             v.estado,
-            p.tipo AS tamano,
-            SUM(d.cantidad) AS cantidad_total,
-            SUM(d.subtotal) AS total,
-            MAX(d.nota) AS nota
+            c.nombre AS cliente,
+            d.id_detalle_venta,
+            p.tipo AS producto,
+            d.cantidad,
+            d.precio_unitario,
+            d.subtotal,
+            d.nota
         FROM venta v
         INNER JOIN clientes c ON v.id_cliente = c.id_cliente
         INNER JOIN detalle_venta d ON v.id_venta = d.id_venta
         INNER JOIN producto p ON d.id_producto = p.id_producto
-        GROUP BY v.id_venta, v.fecha, c.nombre, v.estado, p.tipo
-        ORDER BY v.id_venta DESC";
+        WHERE v.id_venta = ?";
 
-$resultado = $conexion->query($sql);
+try {
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute([$id_venta]);
 
-$venta = $resultado->fetch_assoc();
+    // Usamos fetchAll para obtener todas las filas (por si hay varios productos en una venta)
+    $detalles = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-echo json_encode($venta);
+    echo json_encode($detalles);
 
+} catch (PDOException $e) {
+    echo json_encode(["error" => $e->getMessage()]);
+}
 ?>
+
+
+
+
+
+
+
