@@ -34,9 +34,20 @@ try {
                     <span class="fw-bold"><?php echo $fila['fecha']; ?></span>
                 </div>
                 <div>
-                    <button onclick="eliminarRegistro(<?php echo $fila['id_produccion']; ?>)" class="btn btn-sm text-danger">
-                        <i class="bi bi-trash fs-4"></i>
-                    </button>
+
+                    <div>
+                        <!-- BOTÓN DE EDITAR (NUEVO) -->
+                        <!-- Este enlace envía el ID por la URL a la página de edición -->
+                        <a href="editar_produccion.php?id=<?php echo $fila['id_produccion']; ?>" class="btn btn-sm text-primary me-2">
+                            <i class="bi bi-pencil-square fs-4"></i>
+                        </a>
+
+                        <!-- BOTÓN DE ELIMINAR (EL QUE YA TENÍAS) -->
+                        <button onclick="eliminarRegistro(<?php echo $fila['id_produccion']; ?>)" class="btn btn-sm text-danger">
+                            <i class="bi bi-trash fs-4"></i>
+                        </button>
+                     </div>
+        
                 </div>
             </div>
             <?php endforeach; ?>
