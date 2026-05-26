@@ -1,4 +1,4 @@
-//¿Qué es lo que hace este "Cerebro"?
+//¿Qué es lo que hace este "Cerebro"?  
 UPDATE: A diferencia del INSERT (crear) o DELETE (borrar), el comando UPDATE busca una fila que ya existe y solo cambia los valores que le digamos.
 
 WHERE: Es vital. Si olvidamos el WHERE id_produccion = :id, ¡el código cambiaría la fecha de todas las producciones de la historia por error!

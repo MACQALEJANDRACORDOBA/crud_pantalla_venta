@@ -110,3 +110,27 @@ body {
         margin-top: 50px; /* Menos espacio en pantallas pequeñas */
     }
 }
+/*---  este estilo es para los botones que dicen NUEVO gasto, produccion , venta... ---*/
+
+.tarjeta-blanca-boton {
+    background-color: white !important;
+    border: 1.5px solid #333 !important; /* Borde oscuro fino */
+    border-radius: 15px !important;  /* Bordes redondeados */
+    color: #333 !important;
+    transition: 0.3s;         /* Para que brille un poco al tocarlo */
+    text-decoration: none !important; /* Quita el subrayado azul */
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    padding: 12px;
+    width: 100%;
+    font-weight: bold;
+    margin-top: 15px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05); /* Sombra suave */
+}
+
+/* Esto es para que cuando pases el mouse no se ponga azul */
+.tarjeta-blanca-boton:hover {
+    background-color: #f0f0f0 !important;/* Cambio sutil al pasar el mouse */
+    color: #000 !important;
+}

@@ -1,3 +1,11 @@
+//en mi archivo reporte_diario.php tengo un boton editar que es el que pertenece a este archivo 
+// y este archivo en la pantalla que ve el usuario es el lapiz 
+//¿Qué hace este código?
+Captura el ID: Sabe exactamente cuál producción quieres editar porque lo lee de la URL ($_GET['id']).
+
+Busca la info: Va a la base de datos y trae lo que habías guardado antes.
+
+Rellena el formulario: Usa value="..." para que, al abrir la página, los cuadros de texto ya tengan los números y la fecha cargados.
 <?php
 // 1. Incluimos la conexión
 require_once 'conexion.php';
