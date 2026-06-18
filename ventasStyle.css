@@ -211,28 +211,33 @@ body {
     color: #2e7d32;
 }
 
-/* ESTADOS */
+/* =========================================================================
+   ESTADOS DE CUENTA (MÓDULO VENTAS)
+   ========================================================================= */
 .estado {
     font-size: 12px;
-    padding: 4px 8px;
+    padding: 4px 10px;
     border-radius: 8px;
+    font-weight: bold;
+    display: inline-block;
 }
 
+/* Estado Pendiente: Amarillo / Naranja de advertencia */
 .estado.pendiente {
-    background-color: #fff3cd;
-    color: #856404;
+    background-color: #ffc107 !important;
+    color: #000 !important;
 }
 
-.estado.cancelado {
-    background-color: #d4edda;
-    color: #155724;
-
+/* Estado Cancelado: Rojo de peligro o cerrado */
+.estado.cancelado, .estado.canceló {
+    background-color: #dc3545 !important;
+    color: #fff !important;
 }
 
-.estado.abono,
-.estado.abonó {
-    background-color: #d1ecf1;
-    color: #0c5460;
+/* Estado Abonó: El azulito que te hacía falta (Clase limpia sin tilde) */
+.estado.abono, .estado.abonó {
+    background-color: #17a2b8 !important;
+    color: #fff !important;
 }
 
 .botones-inferiores{

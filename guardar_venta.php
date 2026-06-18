@@ -10,7 +10,7 @@ $precio      = floatval(str_replace('.', '', $_POST['precio']));
 $id_producto = $_POST['tamano'];  
 $estado      = isset($_POST["estado"]) ? $_POST["estado"] : "pendiente";                
 $nota        = $_POST['nota'];
-$subtotal    = $precio * $cantidad; 
+$subtotal    = $precio; 
 $fecha       = date("Y-m-d");
 
 // try {...} Esto es como una red de seguridad. Le dices a PHP: Intenta hacer esto, y si algo sale mal con la base de datos, avísame en la sección de error"
@@ -42,4 +42,3 @@ try {
 
 // En PDO no es estrictamente necesario cerrar la conexión, 
 // se cierra sola al terminar el script.
-?>

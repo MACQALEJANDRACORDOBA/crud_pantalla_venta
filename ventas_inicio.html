@@ -5,13 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ventas</title>
 
-    <!-- Bootstrap -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     
-    <!-- Icons -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
 
-    <!-- CSS -->
     <link rel="stylesheet" href="ventasStyle.css">
 </head>
 
@@ -19,96 +16,80 @@
 
 <div class="app-container">
 
-    <!-- HEADER -->
-    <div class="header-verde">
-        <div class="header-izq">
-            <i class="bi bi-calendar"></i>
-            <div>
-                <strong>1 Enero 2026</strong>
-                <small>Lunes</small>
-            </div>
-        </div>
-        <div class="header-der">
-            <i class="bi bi-tag-fill"></i>
+    <div class="header-verde d-flex align-items-center justify-content-between" style="padding: 15px;">
+    <div class="header-izq d-flex align-items-center">
+        <i class="bi bi-calendar-event me-2" style="font-size: 1.5rem;"></i>
+        <div>
+            <strong id="textoFechaFiltro" class="d-block">Filtrar por Fecha</strong>
+            <small id="textoDiaSemana" class="text-white-50">Toca el calendario para elegir</small>
         </div>
     </div>
+    
+    <div class="header-der" style="position: relative;">
+        <button type="button" class="btn btn-light btn-sm rounded-circle shadow-sm" style="width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;">
+            <i class="bi bi-calendar3 text-success" style="font-size: 1.2rem;"></i>
+        </button>
+        <input type="date" id="filtroFechaVenta" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; z-index: 20;">
+    </div>
+</div>
 
-    <!-- TITULO -->
-    <div class="titulo-seccion">
+<div id="contenedorLimpiar" class="text-center mb-2 mt-2" style="display: none;">
+    <button type="button" id="btnLimpiarFiltro" class="btn btn-sm btn-link text-decoration-none" style="color: #198754; font-weight: bold;">
+        <i class="bi bi-arrow-clockwise"></i> Ver todas las ventas
+    </button>
+</div>
+
+    <div class="titulo-seccion mt-2">
         Ventas
     </div>
 
-    <!-- BOTÓN NUEVA VENTA -->
     <a href="nueva_venta.php" class="btn btn-principal w-100 mb-3">
         <i class="bi bi-plus-circle"></i> Nueva venta
     </a>
 
-    <!-- estas eran mis TARJETAS de ejemplo de como iba a quedar mi LISTA DE VENTAS: 
+    <div id="listaVentas"></div>
 
-    TARJETA 1
-    <div class="card-venta">
-        <div class="venta-header">
-            <strong>Ana Maria</strong>
-            <span class="estado pendiente">Pendiente 🔔</span>
-        </div>
-
-        <div class="venta-body">
-            1 cubeta grande
-        </div>
-
-        <div class="venta-footer">
-            $20.000
+    <div class="botones-inferiores mb-4">
+        <div class="row text-center align-items-center">
+            <div class="col-12">
+                <a href="menu.php" class="btn btn-light border">
+                    <i class="bi bi-arrow-left"></i> Atrás
+                </a>
+            </div>
         </div>
     </div>
 
-    TARJETA 2
-    <div class="card-venta">
-        <div class="venta-header">
-            <strong>Benites</strong>
-            <span class="estado cancelado">Canceló</span>
-        </div>
-
-        <div class="venta-body">
-            2 cubetas pequeñas
-        </div>
-
-        <div class="venta-footer">
-            $40.000
-        </div>
-    </div> -->
-<!-- LISTA DE VENTAS  con esto las creo dinamicamente con datos reales-->
-<div id="listaVentas"></div>
-
-<!-- BOTONES -->
-<div class="botones-inferiores">
-
-<div class="row text-center align-items-center">
-
-<div class="col-12">
-
-<a href="menu.html" class="btn btn-light border">
-<i class="bi bi-arrow-left"></i> Atrás
-</a>
-</div>
-
-
-
-<!--¿Qué hace todo el script? Llama a obtener_ventas.php -> Recibe los datos -> Crea tarjetas -> Las muestra en tu pantalla-->
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</div> <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
 <script>
 $(document).ready(function () {
+    // 1. Poner la fecha real en el Header dinámicamente apenas cargue la página
+    const opcionesFecha = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+    const fechaHoy = new Date();
+    
+    const diaMesAnio = fechaHoy.toLocaleDateString('es-CO', { day: 'numeric', month: 'long', year: 'numeric' });
+    const diaSemana = fechaHoy.toLocaleDateString('es-CO', { weekday: 'long' });
+    const diaSemanaFormateado = diaSemana.charAt(0).toUpperCase() + diaSemana.slice(1);
+
+    $(".header-izq div strong").text(diaMesAnio);
+    $(".header-izq div small").text(diaSemanaFormateado);
+
+    // 2. Luego llamamos a la base de datos para traer las ventas
     cargarVentas();
+});
+
+// Forzar la apertura del calendario si el usuario toca el botón redondo
+$(".header-der").click(function() {
+    // Al hacer click en el contenedor, obligamos al input date a enfocarse o abrirse
+    $("#filtroFechaVenta").focus().click();
 });
 
 function cargarVentas() {
     $.ajax({
         url: "obtener_ventas.php",
         type: "GET",
-        dataType: "json", // Le decimos a jQuery que esperamos un JSON
+        dataType: "json",
         success: function (ventas) {
-            // Ya no necesitamos JSON.parse(response) porque usamos dataType: "json"
-            
             if(ventas.error) {
                 console.error("Error del servidor:", ventas.error);
                 return;
@@ -128,7 +109,7 @@ function cargarVentas() {
                 }
 
                 html += `
-                <div class="card-venta" onclick="abrirVenta(${venta.id_venta})" style="cursor:pointer;">
+                <div class="card-venta" onclick="abrirVenta(${venta.id_venta})" data-fecha="${venta.fecha}" style="cursor:pointer;">
                     <div class="venta-header">
                         <strong>${venta.cliente}</strong>
                         <span class="estado ${venta.estado}">
@@ -159,13 +140,50 @@ function cargarVentas() {
     });
 }
 
-//2)UPDATE DEL CRUD:Creo la función que abre la venta; Cuando haces click -> venta id 5 abre -> detalle_venta.html?id=5 
-// tuve que crear otra pantalla: detalle_venta.html
 function abrirVenta(id){
     window.location.href = "detalle_venta.html?id=" + id;
 }
 
-</script>
+// FILTRO DE FECHAS DINÁMICO
+$("#filtroFechaVenta").on("change", function() {
+    let fechaSeleccionada = $(this).val(); 
+    
+    if(fechaSeleccionada) {
+        let fechaObj = new Date(fechaSeleccionada + "T00:00:00");
+        
+        let diaMesAnio = fechaObj.toLocaleDateString('es-CO', { day: 'numeric', month: 'long', year: 'numeric' });
+        let diaSemana = fechaObj.toLocaleDateString('es-CO', { weekday: 'long' });
+        let diaSemanaFormateado = diaSemana.charAt(0).toUpperCase() + diaSemana.slice(1);
 
+        $("#textoFechaFiltro").text(diaMesAnio);
+        $("#textoDiaSemana").text("Filtrado: " + diaSemanaFormateado);
+
+        $("#contenedorLimpiar").fadeIn();
+
+        $(".card-venta").hide();
+        $(".card-venta").each(function() {
+            let fechaVenta = $(this).data("fecha"); 
+            if(fechaVenta === fechaSeleccionada) {
+                $(this).show();
+            }
+        });
+    }
+});
+
+$("#btnLimpiarFiltro").click(function() {
+    $("#filtroFechaVenta").val("");
+    
+    const fechaHoy = new Date();
+    const diaMesAnio = fechaHoy.toLocaleDateString('es-CO', { day: 'numeric', month: 'long', year: 'numeric' });
+    const diaSemana = fechaHoy.toLocaleDateString('es-CO', { weekday: 'long' });
+    const diaSemanaFormateado = diaSemana.charAt(0).toUpperCase() + diaSemana.slice(1);
+
+    $("#textoFechaFiltro").text(diaMesAnio);
+    $("#textoDiaSemana").text(diaSemanaFormateado);
+    
+    $("#contenedorLimpiar").fadeOut();
+    $(".card-venta").show();
+});
+</script>
 </body>
 </html>

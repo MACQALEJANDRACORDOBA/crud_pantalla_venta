@@ -23,7 +23,7 @@ En este momento, este archivo no necesita preguntarle nada a la base de datos; s
             <h2 class="fw-bold mb-0" style="color: #333;">Nuevo Registro</h2>
         </div>
 
-        <form action="guardar_gasto_logica.php" method="POST">
+        <form action="guardar_gasto_logica.php" method="POST" id="formGasto">
 
             <div class="mb-3">
                 <label class="form-label fw-bold text-muted small text-uppercase">Fecha del Gasto</label>
@@ -37,7 +37,7 @@ En este momento, este archivo no necesita preguntarle nada a la base de datos; s
 
             <div class="mb-3">
                 <label class="form-label fw-bold text-muted small text-uppercase">Valor ($)</label>
-                <input type="number" step="0.01" name="valor" class="form-control p-3 border-dark" style="border-radius: 12px;" placeholder="0.00" required>
+                <input type="text" name="valor" id="valorGasto" class="form-control p-3 border-dark" style="border-radius: 12px;" placeholder="Ej: 50.000" required>
             </div>
 
             <div class="mb-4">
@@ -51,5 +51,29 @@ En este momento, este archivo no necesita preguntarle nada a la base de datos; s
                 </button>
             </div>
 
-        </form> </div> </body>
+        </form> 
+    </div> 
+
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            
+            // MÁSCARA EN TIEMPO REAL: Agrega puntos de miles automáticamente mientras el usuario escribe
+            $("#valorGasto").on("input", function(){
+                let valor = $(this).val().replace(/\./g, "").replace(/\D/g, "");
+                if(valor){
+                    valor = parseInt(valor).toLocaleString("es-CO");
+                }
+                $(this).val(valor);
+            });
+
+            // ANTES DE ENVIAR: Limpia los puntos para que PHP reciba un número limpio (Ej: 50000)
+            $("#formGasto").on("submit", function() {
+                let valorLimpio = $("#valorGasto").val().replace(/\./g, "");
+                $("#valorGasto").val(valorLimpio);
+            });
+            
+        });
+    </script>
+</body>
 </html>

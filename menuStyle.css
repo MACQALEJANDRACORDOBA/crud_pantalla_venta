@@ -1,0 +1,219 @@
+/*MENSAJE IMPORTANTE:Estructura (HTML) define qué está dentro o fuera
+                     Flexbox controla la distribución
+                     CSS da jerarquía visual*/
+/*menu-encabezado*/
+    /*comvierto el encabezado en un contenedor flex;
+display: flex; → pone los elementos en la misma línea
+align-items: center; → centra verticalmente
+justify-content: center; → centra horizontalmente*/
+
+.encabezado {
+    display: flex;
+    justify-content: center;
+    padding: 20px;
+    background-color: #f8f9fa; /* gris muy suave */
+}
+
+.encabezado-contenido { /*"tarjeta"*/
+    display: flex;
+    align-items: center;
+    background-color: white;
+    padding: 15px 20px;
+    border-radius: 14px;
+    border: 2px solid black; /* borde solido */
+    max-width: 90%; /*limito el ancho de la tarjeta, En pantallas pequeñas ocupa casi todo En grandes no se estira infinito*/
+}
+
+.titulo-sistema {
+    font-size: 20px;
+    font-weight: bold;
+    margin-top: 10px;
+    text-align: center;
+}
+@media (min-width: 768px) {
+    .titulo-sistema {
+        font-size: 26px;
+    }
+}
+
+.logo {
+    width: 60px;
+    height: auto;
+}
+@media (min-width: 768px) { /*Ajustar texto según pantalla*/
+    .encabezado-contenido h1 {
+        font-size: 22px;
+    }
+
+    .logo {
+        width: 55px;
+    }
+}
+
+/*calendario-inicio*/
+.icono-calendario {
+    font-size: 20px;
+    color: black;
+    
+}
+@media (min-width: 768px) {
+    .icono-calendario {
+        font-size: 24px;
+    }
+}
+
+
+.selector-mes {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 15px; /* gap: 15px; → separa flechas y tarjeta sin márgenes raros*/
+    margin-top: 20px;
+    color:black
+}
+.tarjeta-mes{
+    display: flex;
+    align-items: center;
+    justify-content: space-between; /* 1)Controlar espacios y orden dentro de una fila: space-between empuja:
+                                    Flecha izquierda → a la izquierda, Flecha derecha → a la derecha, Mes → queda cómodo en el centro*/
+    background-color: #9ee4bf;
+    padding: 15px 20px;
+    border-radius: 14px;
+    border: 2px solid black; /* borde solido */
+    max-width: 90%;
+    
+}
+
+
+.mes-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;              /* 2)Controlar espacios y orden dentro de una fila: gap: 12px; → separa el texto del ícono sin usar márgenes raros*/
+    font-weight: bold;
+}
+
+/* 3)Controlar espacios y orden dentro de una fila: tengo 3 elementos en una misma linea; Flecha izquierda,
+Bloque central (icono + “Enero 2026”), Flecha derecha: padding: 0 12px; Da espacio a izquierda y derecha ,Evita que quede pegado al texto, Mejora el toque en pantallas táctiles*/
+.btn-nav {
+    background: none;
+    border: none;
+    font-size: 30px;
+    font-weight: bold;
+    cursor: pointer;
+    padding: 8px 12px; /* Para que las flechas se vean más “botón” al tocarlas en móvil. Esto: mejora accesibilidad y evita errores al tocar*/
+}
+
+/*botones menu principal*/
+
+.menu-principal {  
+    display: flex;
+    flex-direction: column; /* → uno debajo del otro*/
+    align-items: center;    /* → centrados horizontalmente*/
+    gap: 16px;              /*→ espacio entre botones (mucho mejor que margin)*/
+    margin-top: 25px;       /*→ separa del contenido de arriba*/
+}
+
+/*Esto lo hice para centrar el menu desplegable
+.menu-desplegable {  
+    left: 50%;
+    transform: translateX(-50%);
+}
+*/
+
+
+.boton-menu {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+    width: 260px;  /*width fijo ayuda a que se vea como tarjeta, Es totalmente responsivo (en móvil se adapta)*/
+    padding: 15px 20px;
+    border-radius: 16px;
+    border: 2px solid black;
+    background-color: white;
+    font-weight: bold;
+    text-decoration: none;   /* quita subrayado */
+    color: black;          /* color normal letras*/
+    transition: all 0.2s ease-in-out; /*Sin esto, el hover se ve tosco, brusco.Con esto, se ve fluido*/
+}
+
+.boton-menu:hover { /*Qué hace: fondo ligeramente gris, sombra suave, pequeño “levantado” del botón*/
+    background-color: #f8f9fa;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+    transform: translateY(-2px);
+}
+
+.icono-circulo { /*Círculo con el “+” por ahora decorativo*/
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: 2px solid black;
+    background-color: white;
+    color: black;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+}
+
+.texto-boton { /*Para centrar SOLO el texto interno*/
+    flex: 1;
+    text-align: center;
+}
+
+.menu-principal .dropdown-menu {
+    padding: 12px 50px;
+}
+
+.item-menu {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 14px;
+    margin: 6px;
+    border-radius: 12px;
+    border: 1.5px solid #e0e0e0;
+    background-color: #c3bfbf;
+    font-weight: 500;
+}
+
+.icono-item {
+    font-size: 18px;
+    color: black;
+}
+
+.item-menu:hover {
+    background-color: #f5f5f5;
+}
+
+
+/*boton salida*/
+.contenedor-salida { 
+    display: flex;
+    justify-content: center;
+    margin-top: 40px;
+}
+
+
+.boton-salida {
+    width: auto;              /* width: auto es CLAVE, deja que se ajuste al contenido, por que El botón Salir hereda de .boton-menu:
+
+                                    un width grande
+                                    un justify-content: space-between
+                                    un flex: 1 en el texto*/
+    padding: 6px 12px;        /* menos alto y menos ancho */
+    font-size: 14px;
+    position: fixed;  /*para que el boton quede en la parte inferior de la pantalla*/
+    bottom: 20px;   /* distancia desde abajo */
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1000;
+    border: 2px solid red;
+    color: red; 
+    font-weight: bold;
+
+    
+}
+.boton-salida i {
+    font-size: 1.2rem;   /* agranda el ícono */
+}

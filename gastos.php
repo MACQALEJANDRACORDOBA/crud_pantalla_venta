@@ -4,19 +4,17 @@ gastos.php (La lista): Necesita ese código porque su trabajo es mostrarme el hi
 nuevo_gasto.php (El formulario): Su trabajo no es mostrar el pasado, su única misión es darle cajas vacías al usuario para que escriba algo nuevo.-->
 
 <?php
-// === AQUÍ VA EL PASO 1 (EL CEREBRO): TRAER LOS DATOS ===
+// === TRAER LOS DATOS ===
 require_once 'conexion.php';
 
 try {
-    // Abrimos la puerta de la base de datos
     $pdo = Conexion::conectar();
     
-    // Le pedimos el ID, la fecha, la descripción y el valor de los gastos
+    // Traemos los gastos ordenados por la más reciente
     $sql = "SELECT id_gasto, fecha, descripcion, valor FROM gasto ORDER BY fecha DESC";
     $stmt = $pdo->prepare($sql);
     $stmt->execute();
     
-    // Guardamos todos los gastos dentro de la variable $registros
     $registros = $stmt->fetchAll(PDO::FETCH_ASSOC);
     
 } catch (Exception $e){
@@ -42,13 +40,19 @@ try {
             <div class="tarjeta-fecha" onclick="document.getElementById('selectorFecha').showPicker()">
                 <i class="bi bi-calendar-check fs-3"></i>
                 <div>
-                    <div id="fechaTexto" class="fw-bold">Seleccionar Fecha</div>
-                    <div id="diaTexto" class="small text-muted">Toca para elegir</div>
+                    <div id="fechaTexto" class="fw-bold">Filtrar por Fecha</div>
+                    <div id="diaTexto" class="small text-muted">Toca para elegir un día</div>
                 </div>
             </div>
             <input type="date" id="selectorFecha" name="fecha" hidden>
+            
+            <div class="text-center mt-2" id="contenedorLimpiar" style="display: none;">
+                <button type="button" id="btnLimpiarFiltro" class="btn btn-sm btn-secondary rounded-pill px-3">
+                    <i class="bi bi-x-circle"></i> Ver todos los gastos
+                </button>
+            </div>
 
-            <div class="titulo-seccion mt-5 mb-4 text-center">Gastos</div>
+            <div class="titulo-seccion mt-4 mb-4 text-center">Gastos</div>
 
             <div class="mt-4 mb-4">
                 <a href="nuevo_gasto.php" class="tarjeta-blanca-boton">
@@ -58,10 +62,15 @@ try {
 
             <div class="lista-gastos mt-4">
                 <?php if (empty($registros)): ?>
-                    <p class="text-center text-muted">Aún no tienes gastos registrados.</p>
+                    <p class="text-center text-muted" id="mensajeVacio">Aún no tienes gastos registrados.</p>
                 <?php else: ?>
+                    
+                    <p class="text-center text-muted" id="mensajeNoCoincide" style="display: none;">
+                        No hay gastos registrados en esta fecha.
+                    </p>
+
                     <?php foreach ($registros as $gasto): ?>
-                        <div class="card mb-3 p-3 shadow-sm" style="border-radius: 15px; border-left: 5px solid #dc3545; background-color: #fff;">
+                        <div class="card card-gasto mb-3 p-3 shadow-sm" data-fecha="<?php echo $gasto['fecha']; ?>" style="border-radius: 15px; border-left: 5px solid #dc3545; background-color: #fff;">
                             <div class="d-flex justify-content-between align-items-center">
                                 <div>
                                     <h5 class="mb-1 fw-bold text-dark"><?php echo htmlspecialchars($gasto['descripcion']); ?></h5>
@@ -79,16 +88,71 @@ try {
                     <?php endforeach; ?>
                 <?php endif; ?>
             </div>
+
             <div class="col-12 text-center mt-5">
-                <a href="menu.html" class="btn btn-light border px-4">
+                <a href="menu.php" class="btn btn-light border px-4">
                     <i class="bi bi-arrow-left"></i> Atrás
                 </a>
             </div>
-        </form> </div>
-    <!--¿Qué hace todo el script? Llama a obtener_ventas.php -> Recibe los datos -> Crea tarjetas -> Las muestra en tu pantalla-->
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        </form> 
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    
+    <script>
+        $(document).ready(function() {
+            
+            // ESCUCHADOR: Detecta cuando el usuario cambia la fecha en el calendario
+            $("#selectorFecha").on("change", function() {
+                let fechaSeleccionada = $(this).val(); // Da formato: YYYY-MM-DD
+                
+                if (fechaSeleccionada) {
+                    // 1. Modificar textos de la tarjeta superior
+                    $("#fechaTexto").text("Filtrado por:");
+                    $("#diaTexto").text(fechaSeleccionada);
+                    
+                    // 2. Mostrar el botón de limpiar filtro
+                    $("#contenedorLimpiar").fadeIn();
+                    
+                    // 3. Lógica del filtro físico en las tarjetas de abajo
+                    let contadorVisibles = 0;
+                    
+                    $(".card-gasto").each(function() {
+                        let fechaTarjeta = $(this).data("fecha");
+                        
+                        if (fechaTarjeta === fechaSeleccionada) {
+                            $(this).show(); // Muestra las tarjetas que coinciden
+                            contadorVisibles++;
+                        } else {
+                            $(this).hide(); // Oculta las que no corresponden al día
+                        }
+                    });
+                    
+                    // 4. Si ninguna tarjeta coincide con el día elegido, muestra mensaje de aviso
+                    if (contadorVisibles === 0) {
+                        $("#mensajeNoCoincide").show();
+                    } else {
+                        $("#mensajeNoCoincide").hide();
+                    }
+                }
+            });
+
+            // ACCIÓN: Cuando el usuario hunde el botón "Ver todos los gastos"
+            $("#btnLimpiarFiltro").on("click", function() {
+                // Reseteamos el input fecha y los textos originales
+                $("#selectorFecha").val("");
+                $("#fechaTexto").text("Filtrar por Fecha");
+                $("#diaTexto").text("Toca para elegir un día");
+                
+                // Ocultamos el botón de limpiar y el mensaje de error
+                $("#contenedorLimpiar").hide();
+                $("#mensajeNoCoincide").hide();
+                
+                // Volvemos a mostrar absolutamente todas las tarjetas de gastos
+                $(".card-gasto").show();
+            });
+
+        });
+    </script>
 </body>
 </html>
-
-
-
